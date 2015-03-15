@@ -17,11 +17,19 @@ function makeAllTablesSortable(tables)
 }
 function makeTableSortable(table)
 {
+	//var name = table.className;
+	//table.setAttribute("id", name);
 	var name = table.id;
-	var ths = table.getElementsByTagName("th");
+	//var ths = table.getElementsByTagName("th");
+	var ts = table.rows;
+	var ths = ts[0].cells;
 	for (var i = 0; i < ths.length; i++) {
 		(function(i)
 		{
+			ths[i].onmouseout = function()
+			{
+				this.style.backgroundImage = "none";
+			};
 			ths[i].onclick = function()
 			{
 				sortTable(name, i);
@@ -29,8 +37,7 @@ function makeTableSortable(table)
 		})(i);
 	};
 }
-var first = 0;
-var second = 0;
+
 function sortTable(sTableid,iCol)
 {
 	var oTable = document.getElementById(sTableid);
@@ -47,35 +54,18 @@ function sortTable(sTableid,iCol)
 	if (oTable.sortCol == iCol)
 	{
 		tr.reverse();
-		if (sTableid == "todo") {
-			if ((first++) % 2 == 0)
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
-			else
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('descend.png')";
+		
+		if (oTable.rows[0].cells[iCol].style.backgroundImage.match(/ascend.png/)) {
+			oTable.rows[0].cells[iCol].style.backgroundImage = "url('descend.png')";
+		} else {
+			oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
 		}
-		else if (sTableid == "staff") {
-			if ((second++) % 2 == 0)
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
-			else
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('descend.png')";
-		}
+
 	}
 	else
 	{
 		tr.sort(Compare(iCol));
-		//oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
-		if (sTableid == "todo") {
-			if ((first++) % 2 == 0)
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
-			else
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('descend.png')";
-		}
-		else if (sTableid == "staff") {
-			if ((second++) % 2 == 0)
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
-			else
-				oTable.rows[0].cells[iCol].style.backgroundImage = "url('descend.png')";
-		}
+		oTable.rows[0].cells[iCol].style.backgroundImage = "url('ascend.png')";
 	}
 	var oFragment = document.createDocumentFragment();
 	for (var i = 0; i < tr.length; i++) {
@@ -85,11 +75,6 @@ function sortTable(sTableid,iCol)
 	oTbody.appendChild(oFragment);
 	oTable.sortCol = iCol;
 	colDataRows[1].style.backgroundColor = "#d9d6c3";
-	/*oTable.rows[0].cells.onmouseout = function() {
-		for (var i = 0; i < oTable.rows[0].cells.length; i++) {
-			oTable.rows[0].cells[0].style.backgroundImage = "none";
-		};
-	}*/
 }
 
 function Compare(iCol)
